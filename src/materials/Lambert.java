@@ -14,7 +14,8 @@ public class Lambert extends Material {
 	}
 
 	@Override
-	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean cel) {
+	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean cel,
+			Color ret) {
 		float r1 = rnd.getFloat();
 		float r2 = rnd.getFloat();
 		float phi = (float) (2.0f * Math.PI * r1);
@@ -31,6 +32,7 @@ public class Lambert extends Material {
 		Vector up = tmp.cross(record.normal).norm();
 		Vector dir = up.mul(x).add(record.normal.cross(up).mul(y))
 				.add(record.normal.mul(z));
+		ret.mulThis(0.318309886184f);
 		return dir;
 	}
 }

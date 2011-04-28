@@ -6,10 +6,10 @@ import common.Vector;
 import common.Xorshift;
 
 public class DiffuseSpecular extends Material {
-	
+
 	Lambert diff = new Lambert(this.emittance, this.reflectance);
 	Specular spec = new Specular(this.emittance, this.reflectance, this.getS());
-	
+
 	public DiffuseSpecular(Color emitance, Color reflectance, float s) {
 		this.emittance = emitance;
 		this.reflectance = reflectance;
@@ -17,7 +17,8 @@ public class DiffuseSpecular extends Material {
 	}
 
 	@Override
-	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean specc) {
+	public Vector newDirection(Xorshift rnd, Hit record, float s,
+			boolean specc, Color ret) {
 		float cosine = record.ray.direction.dot(record.normal);
 		if (cosine < 0.0f)
 			cosine = -cosine;
@@ -26,9 +27,11 @@ public class DiffuseSpecular extends Material {
 		float R = R0 + (1.0f - R0) * cos * cos * cos * cos * cos;
 		float P = (R + 0.5f) / 2.0f;
 		if (rnd.getFloat() <= P) {
-			return spec.newDirection(rnd, record, this.getS(), specc);
+			ret.mulThis(R / P);
+			return spec.newDirection(rnd, record, this.getS(), specc, ret);
 		} else {
-			return diff.newDirection(rnd, record, this.getS(), specc);
+			ret.mulThis((1.0f - R / 1.0f - P));
+			return diff.newDirection(rnd, record, this.getS(), specc, ret);
 		}
 	}
 

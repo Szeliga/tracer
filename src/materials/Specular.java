@@ -6,7 +6,7 @@ import common.Vector;
 import common.Xorshift;
 
 public class Specular extends Material {
-	
+
 	public Specular(Color emitance, Color reflectance, float s) {
 		this.emittance = emitance;
 		this.reflectance = reflectance;
@@ -14,7 +14,8 @@ public class Specular extends Material {
 	}
 
 	@Override
-	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean spec) {
+	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean spec,
+			Color ret) {
 		spec = true;
 		float r1 = rnd.getFloat();
 		float r2 = rnd.getFloat();
@@ -34,8 +35,7 @@ public class Specular extends Material {
 			tmp = new Vector(1.0f, 0.0f, 0.0f);
 		}
 		Vector up = tmp.cross(r).norm();
-		Vector dir = up.mul(x).add(r.cross(up).mul(y))
-				.add(r.mul(z));
+		Vector dir = up.mul(x).add(r.cross(up).mul(y)).add(r.mul(z));
 		return dir;
 	}
 }

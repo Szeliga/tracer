@@ -11,7 +11,7 @@ public abstract class Material {
 	public float s;
 
 	public abstract Vector newDirection(Xorshift rnd, Hit record, float s,
-			boolean spec);
+			boolean spec, Color ret);
 
 	public boolean isLight() {
 		if (emittance.r > 0.0f || emittance.g > 0.0f || emittance.b > 0.0f) {
