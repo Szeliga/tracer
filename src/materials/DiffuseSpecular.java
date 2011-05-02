@@ -30,7 +30,7 @@ public class DiffuseSpecular extends Material {
 			ret.mulThis(R / P);
 			return spec.newDirection(rnd, record, this.getS(), specc, ret);
 		} else {
-			ret.mulThis((1.0f - R / 1.0f - P));
+			ret.mulThis((1.0f - R / (1.0f - P)));
 			return diff.newDirection(rnd, record, this.getS(), specc, ret);
 		}
 	}

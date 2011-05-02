@@ -62,23 +62,23 @@ public class Tracer {
 	}
 
 	public void cornellBox() {
-		Vector eye = new Vector(0.0f, 25.0f, 140.0f);
+		Vector eye = new Vector(0.0f, 0.0f, 20.0f);
 		Vector lookAt = new Vector(0.0f, 0.0f, 0.0f);
 		cam = new Camera(eye, lookAt);
-		Material green = new Lambert(new Color(), new Color(0.2f, 1.0f, 0.1f));
-		Material blue = new Lambert(new Color(), new Color(0.1f, 0.1f, 1.0f));
-		Material white = new Lambert(new Color(), new Color(0.8f, 0.8f, 0.8f));
+		Material cyan = new Lambert(new Color(), new Color(0.0f, 1.0f, 1.0f));
+		Material magenta = new Lambert(new Color(), new Color(1.0f, 0.0f, 0.56f));
+		Material white = new Lambert(new Color(), new Color(0.6f, 0.6f, 0.6f));
 		Material red = new Lambert(new Color(), new Color(1.0f, 0.1f, 0.1f));
-		Material mirror = new DiffuseSpecular(new Color(), new Color(0.7f,
-				0.7f, 0.7f), 10);
-		Material light = new Lambert(new Color(15.0f, 15.0f, 15.0f),
+		Material mirror = new DiffuseSpecular(new Color(), new Color(0.8f,
+				0.8f, 0.8f), 100000000f);
+		Material light = new Lambert(new Color(25.0f, 25.0f, 25.0f),
 				new Color());
-		prims.add(new Sphere(new Vector(0, 100, 25.0f), 20.5f, light));
-		prims.add(new Sphere(new Vector(0, 5.0f, 25), 10.0f, mirror));
-		prims.add(new Sphere(new Vector(20, 5.0f, 40), 10.0f, blue));
-		prims.add(new Sphere(new Vector(0, -2004, 0), 2000, green));
+		prims.add(new Sphere(new Vector(10, 20, 10.0f), 5.0f, light));
+		prims.add(new Sphere(new Vector(0, 3.0f, 0), 2.5f, mirror));
+		prims.add(new Sphere(new Vector(0, -1.5f, 0), 2.5f, magenta));
+		prims.add(new Sphere(new Vector(0, -2004, 0), 2000, white));
 		// prims.add(new Sphere(new Vector(0, 504, 0), 500, white));
-		 prims.add(new Sphere(new Vector(0, 0, -2004), 2000, white));
+//		 prims.add(new Sphere(new Vector(0, 0, -2004), 2000, blue));
 		// prims.add(new Sphere(new Vector(504, 0, 0), 500, green));
 		// prims.add(new Sphere(new Vector(-504, 0, 0), 500, blue));
 		for (Primitive shape : prims)
@@ -95,7 +95,7 @@ public class Tracer {
 		Material white = new Lambert(new Color(), new Color(0.8f, 0.8f, 0.8f));
 		Material light = new Lambert(new Color(10, 10, 10), new Color(1, 1, 1));
 		Material mirror = new DiffuseSpecular(new Color(), new Color(0.8f,
-				0.8f, 0.8f), 1000);
+				0.8f, 0.8f), 10000000);
 
 		prims.add(new Sphere(new Vector(0, 3, 0), 1.0f, light));
 		prims.add(new Sphere(new Vector(2, -2.5f, 1), 1.5f, white));
@@ -112,7 +112,7 @@ public class Tracer {
 	}
 
 	public synchronized void doIt() {
-		this.cornellBox();
+		this.cornellBox2();
 		start = System.currentTimeMillis();
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
 			new Engine(new Xorshift(i)).start();
