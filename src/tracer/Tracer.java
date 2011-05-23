@@ -62,23 +62,27 @@ public class Tracer {
 	}
 
 	public void cornellBox() {
-		Vector eye = new Vector(0.0f, 0.0f, 20.0f);
+		Vector eye = new Vector(0.0f, 7.0f, 20.0f);
 		Vector lookAt = new Vector(0.0f, 0.0f, 0.0f);
 		cam = new Camera(eye, lookAt);
 		Material cyan = new Lambert(new Color(), new Color(0.0f, 1.0f, 1.0f));
-		Material magenta = new Lambert(new Color(), new Color(1.0f, 0.0f, 0.56f));
+		Material magenta = new Lambert(new Color(),
+				new Color(1.0f, 0.0f, 0.56f));
 		Material white = new Lambert(new Color(), new Color(0.6f, 0.6f, 0.6f));
 		Material red = new Lambert(new Color(), new Color(1.0f, 0.1f, 0.1f));
-		Material mirror = new DiffuseSpecular(new Color(), new Color(0.8f,
-				0.8f, 0.8f), 100000000f);
-		Material light = new Lambert(new Color(25.0f, 25.0f, 25.0f),
+		Material mirror = new DiffuseSpecular(new Color(), new Color(0.9f,
+				0.9f, 0.9f), 10f);
+		Material mirror2 = new DiffuseSpecular(new Color(), new Color(0.8f,
+				0.9f, 0.8f), 5f);
+		Material light = new Lambert(new Color(15.0f, 15.0f, 15.0f),
 				new Color());
-		prims.add(new Sphere(new Vector(10, 20, 10.0f), 5.0f, light));
-		prims.add(new Sphere(new Vector(0, 3.0f, 0), 2.5f, mirror));
-		prims.add(new Sphere(new Vector(0, -1.5f, 0), 2.5f, magenta));
+		prims.add(new Sphere(new Vector(0, 15, 0.0f), 5.0f, light));
+		prims.add(new Sphere(new Vector(5, -1.5f, 0), 2.5f, cyan));
+		prims.add(new Sphere(new Vector(-5, -1.5f, 0), 2.5f, magenta));
+		prims.add(new Sphere(new Vector(0, -1.5f, -5), 2.5f, mirror));
 		prims.add(new Sphere(new Vector(0, -2004, 0), 2000, white));
-		// prims.add(new Sphere(new Vector(0, 504, 0), 500, white));
-//		 prims.add(new Sphere(new Vector(0, 0, -2004), 2000, blue));
+		prims.add(new Sphere(new Vector(0, 2015, 0), 2000, white));
+		prims.add(new Sphere(new Vector(0, 0, -2015), 2000, white));
 		// prims.add(new Sphere(new Vector(504, 0, 0), 500, green));
 		// prims.add(new Sphere(new Vector(-504, 0, 0), 500, blue));
 		for (Primitive shape : prims)
@@ -90,21 +94,24 @@ public class Tracer {
 		Vector eye = new Vector(0.0f, 0.0f, 15.0f);
 		Vector lookAt = new Vector(0.0f, 0.0f, 0.0f);
 		cam = new Camera(eye, lookAt);
+		Material cyan = new Lambert(new Color(), new Color(0.0f, 1.0f, 1.0f));
+		Material yell = new Lambert(new Color(), new Color(1.0f, 0.65f, 0.0f));
+		Material mage = new Lambert(new Color(), new Color(1.0f, 0.0f, 0.56f));
 		Material green = new Lambert(new Color(), new Color(0.2f, 0.9f, 0.1f));
 		Material blue = new Lambert(new Color(), new Color(0.1f, 0.1f, 0.9f));
 		Material white = new Lambert(new Color(), new Color(0.8f, 0.8f, 0.8f));
 		Material light = new Lambert(new Color(10, 10, 10), new Color(1, 1, 1));
 		Material mirror = new DiffuseSpecular(new Color(), new Color(0.8f,
-				0.8f, 0.8f), 10000000);
+				0.8f, 0.8f), 1000000);
 
 		prims.add(new Sphere(new Vector(0, 3, 0), 1.0f, light));
-		prims.add(new Sphere(new Vector(2, -2.5f, 1), 1.5f, white));
-		prims.add(new Sphere(new Vector(-2, -2.5f, -1), 1.5f, mirror));
+		prims.add(new Sphere(new Vector(2, -2.5f, 1), 1.5f, mirror));
+		prims.add(new Sphere(new Vector(-2, -2.5f, -1), 1.5f, white));
 		prims.add(new Sphere(new Vector(0, -504, 0), 500, white));
 		prims.add(new Sphere(new Vector(0, 504, 0), 500, white));
 		prims.add(new Sphere(new Vector(0, 0, -504), 500, white));
-		prims.add(new Sphere(new Vector(504, 0, 0), 500, blue));
-		prims.add(new Sphere(new Vector(-504, 0, 0), 500, green));
+		prims.add(new Sphere(new Vector(504, 0, 0), 500, mage));
+		prims.add(new Sphere(new Vector(-504, 0, 0), 500, cyan));
 
 		for (Primitive shape : prims)
 			if (shape.material.isLight())
@@ -177,23 +184,32 @@ public class Tracer {
 				}
 				if (!record.isHit)
 					return new Color();
+
 				Color ret = new Color();
-				boolean spec = false;
 				Material m = record.object.material;
-				
-				
-				if (m.isLight()) {
+				boolean isSpec = false;
+				Vector dir = m.newDirection(rnd, record, m.getS(), cel, ret,
+						isSpec);
+
+				if (cel) {
 					ret.addThis(m.emittance);
+					cel = false;
 				}
-				if (cel && !spec)
+
+				if (!isSpec)
 					ret.addThis(m.reflectance.mul(directLighting(record)));
 
-				Vector dir = m.newDirection(rnd, record, m.getS(), spec, ret);
 				Ray newRay = new Ray(record.iP.add(dir.mul(0.001f)), dir);
-				ret.addThis(m.reflectance.mul(trace(newRay, !cel)));
-				return ret;
+				ret.addThis(m.reflectance.mul(trace(newRay, cel)));
+
+				return ret.mul(1.25f);
 			}
 		}
+
+	}
+
+	public int foo() {
+		return foo();
 	}
 
 	private Color directLighting(Hit record) {

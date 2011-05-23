@@ -8,7 +8,6 @@ public class Main {
 	 * @param args
 	 */
 	public static synchronized void main(String[] args) {
-
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Tracer tracer = new Tracer();

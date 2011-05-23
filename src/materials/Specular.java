@@ -14,9 +14,10 @@ public class Specular extends Material {
 	}
 
 	@Override
-	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean spec,
-			Color ret) {
-		spec = true;
+	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean cel,
+			Color ret, boolean isSpec) {
+		cel = true;
+		isSpec = true;
 		float r1 = rnd.getFloat();
 		float r2 = rnd.getFloat();
 		float phi = (float) (2.0f * Math.PI * r1);
@@ -36,12 +37,11 @@ public class Specular extends Material {
 		}
 		Vector up = tmp.cross(r).norm();
 		Vector dir = up.mul(x).add(r.cross(up).mul(y)).add(r.mul(z));
-		float cos = r.dot(dir);
-		if (cos < 1.0f && cos > 0.0f) {
-			ret.mulThis((s + 2) / (s + 1) * (float) Math.pow(cos, s));
-		} else {
-			ret.mulThis(0.0f);
-		}
+		float cos = -record.ray.direction.dot(record.normal);
+//		if (cos < 0.0f) {
+//			cos = 0.0f;
+//		}
+		ret.mulThis(((s + 2)) / (s + 1) * cos);
 		return dir;
 	}
 }

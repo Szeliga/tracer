@@ -17,21 +17,24 @@ public class DiffuseSpecular extends Material {
 	}
 
 	@Override
-	public Vector newDirection(Xorshift rnd, Hit record, float s,
-			boolean specc, Color ret) {
+	public Vector newDirection(Xorshift rnd, Hit record, float s, boolean cel,
+			Color ret, boolean isSpec) {
 		float cosine = record.ray.direction.dot(record.normal);
 		if (cosine < 0.0f)
 			cosine = -cosine;
 		float cos = 1.0f - cosine;
-		float R0 = 0.05f;
-		float R = R0 + (1.0f - R0) * cos * cos * cos * cos * cos;
-		float P = (R + 0.5f) / 2.0f;
-		if (rnd.getFloat() <= P) {
-			ret.mulThis(R / P);
-			return spec.newDirection(rnd, record, this.getS(), specc, ret);
+		float p = 0.7f;
+		float ks = 0.2f;
+		// float R = R0 + (1.0f - R0) * cos * cos * cos * cos * cos;
+		// float P = (R + 0.5f) / 2.0f;
+		if (rnd.getFloat() <= p) {
+			ret.mulThis(ks / p);
+			return spec
+					.newDirection(rnd, record, this.getS(), cel, ret, isSpec);
 		} else {
-			ret.mulThis((1.0f - R / (1.0f - P)));
-			return diff.newDirection(rnd, record, this.getS(), specc, ret);
+			ret.mulThis((1.0f - ks / (1.0f - p)));
+			return diff
+					.newDirection(rnd, record, this.getS(), cel, ret, isSpec);
 		}
 	}
 
